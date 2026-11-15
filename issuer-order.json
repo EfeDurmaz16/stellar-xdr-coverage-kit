@@ -1,0 +1,19 @@
+{
+  "id": "asset-issuer-byte-order",
+  "synthetic": true,
+  "source": "https://github.com/stellar/js-stellar-sdk/pull/1766",
+  "assetCode": "ARST",
+  "expectedComparison": -1,
+  "issuers": [
+    {
+      "strKey": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF",
+      "keyHex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "assetXdrBase64": "AAAAAUFSU1QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    {
+      "strKey": "GA5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DVTUJ",
+      "keyHex": "3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a",
+      "assetXdrBase64": "AAAAAUFSU1QAAAAAOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo="
+    }
+  ]
+}
