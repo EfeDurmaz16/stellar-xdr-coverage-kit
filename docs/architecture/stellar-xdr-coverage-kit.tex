@@ -1,0 +1,81 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=22mm,top=22mm,bottom=22mm,footskip=12mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,graphicx,xcolor,array,tabularx,booktabs,fancyhdr}
+\usepackage[hidelinks,unicode]{hyperref}
+\hypersetup{pdftitle={Stellar XDR Coverage Kit: Technical Architecture},pdfauthor={Efe Baran Durmaz},pdfsubject={SDK conformance and indexer replay}}
+\definecolor{ink}{gray}{0.10}
+\definecolor{mid}{gray}{0.30}
+\definecolor{rulegray}{gray}{0.68}
+\color{ink}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+\setlength{\tabcolsep}{0pt}
+\renewcommand{\arraystretch}{1.20}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\sffamily\color{mid}Efe Baran Durmaz\quad /\quad Stellar XDR Coverage Kit}
+\fancyfoot[R]{\small\sffamily\color{mid}\thepage\ / 2}
+\newcommand{\kicker}[1]{{\sffamily\small\bfseries\color{mid}#1}\par\vspace{2pt}}
+\newcommand{\titleline}[1]{{\fontsize{29}{32}\selectfont\bfseries #1}\par\vspace{2pt}}
+\newcommand{\sectionline}[1]{\vspace{9pt}{\sffamily\fontsize{14}{17}\selectfont\bfseries #1}\par\vspace{1pt}}
+\newcommand{\labeltext}[1]{\textsf{\textbf{#1}}}
+\newcommand{\sourcelink}[2]{\href{#1}{\underline{#2}}}
+\newcommand{\diagram}[2]{\vspace{2pt}\par\noindent\makebox[\linewidth]{\includegraphics[width=#2\linewidth]{#1}}\par}
+\begin{document}
+\raggedright
+\kicker{TECHNICAL ARCHITECTURE}
+\titleline{Stellar XDR Coverage Kit}
+When a wallet upgrades its Stellar SDK, can it still read the same ledger and recover every affected account? The kit checks both the decoded XDR and the rows the wallet stores.
+
+\sectionline{Two checks on the same corpus}
+\diagram{replay.pdf}{0.98}
+{\small\sffamily\color{mid}Proposed replay paths. Standalone XDR values enter the SDK path. Complete ledger records can also enter wallet-backend through a local RPC endpoint.}\par
+
+\sectionline{An independent reference for each result}
+The manifest gives every case a stable ID, source, XDR type, expected values and provenance. It records CAP and protocol attribution when known. Historical captures also carry a network, ledger sequence, protocol and digest. Synthetic examples claim no observed ledger or network.
+
+A pinned Rust generator will rebuild cases for the public and test network passphrases where relevant. Full-ledger cases will be checked against stellar-core's \texttt{-{}-check-lcm} goldens. Expected values for standalone types come from their underlying fields. Unsigned 64-bit IDs are compared as decimal strings.
+
+\sectionline{What reviewers can run today}
+{\small
+\begin{tabularx}{\linewidth}{@{}p{31mm}@{\hspace{4mm}}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\labeltext{Fixture} & \labeltext{Observed across three JavaScript SDK releases}\\
+\midrule
+ARST issuer order & Versions 13.3.0 and 16.2.0 order by encoded text. Version 17.2.1 follows the issuer bytes. All three reproduce the original bytes.\\[2pt]
+Muxed account & All three preserve the exact ID \texttt{9007199254740993}, the public key and the 44 original bytes. The synthetic account uses CAP-0027.\\
+\bottomrule
+\end{tabularx}}\par\vspace{4pt}
+Reviewers can install pinned dependencies with \texttt{bun install -{}-frozen-lockfile}, then run \texttt{bun run test} offline. All nine tests pass. The Go and Rust runners, ledger replay and linter are proposed work.
+
+{\small\sffamily\color{mid}\sourcelink{https://github.com/EfeDurmaz16/stellar-xdr-coverage-kit/tree/b70dd7942518f5e80dafccef11c949b0babe506d}{Tested source and manifest}\qquad\sourcelink{https://github.com/stellar/js-stellar-sdk/pull/1766}{Upstream issuer-order fix}}
+
+\newpage
+\kicker{IMPLEMENTATION AND RELEASE}
+\titleline{How a run earns a pass}
+\sectionline{SDK and indexer reports}
+Each SDK runner will emit a row for each applicable fixture. Field equality and byte equality are separate checks. The matrix will show missing results, version pins and exceptions. Initial coverage includes issuer order, account and offer IDs, muxed accounts, vector limits, nested authorization entries and map key identity.
+
+The reference adapter will feed ordered \texttt{LedgerCloseMeta} records to a pinned wallet-backend over local \texttt{getLedgers}. The verifier will compare persisted effects, participants and row counts with changes recorded in ledger meta. The report distinguishes a wrong value from a missing row and identifies the first affected ledger.
+
+\sectionline{Hardening and operating limits}
+{\small
+\begin{tabularx}{\linewidth}{@{}p{31mm}@{\hspace{4mm}}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\labeltext{Risk} & \labeltext{Control and visible signal}\\
+\midrule
+Misread input & Three Go lint rules flag trust in fields core passes through, missing depth or size caps, and envelope-based attribution. Findings include a rule ID and source line.\\[3pt]
+Incomplete runs & CI checks expected ledger ranges, row counts and results. A partial run fails. Streaming, a memory ceiling and a timeout bound the replay. The report records the last ledger and peak memory.\\[3pt]
+Stale fixtures & Scheduled read-only checks compare public network progress with the last tested protocol and range. Ordinary pull-request tests use local fixtures after setup. No signing keys, funds or user telemetry are needed.\\
+\bottomrule
+\end{tabularx}}\par\vspace{4pt}
+
+\sectionline{Release and first protocol upgrade}
+\diagram{upgrade.pdf}{0.96}
+The MIT release will include a reviewer command, the coverage matrix, a mainnet-history replay report and a field guide covering validated fields, caps, ledger participants, muxed accounts and SEP-0023 signed payloads. A core or platform engineer will be asked to review the guide.
+
+I will maintain the kit through the first protocol upgrade after release, rerun both paths and publish the result. Confirmed compatibility findings will link to upstream reports. Sensitive findings will follow the affected project's disclosure process.
+
+{\small\sffamily\color{mid}\sourcelink{https://github.com/stellar/stellar-core/pull/5435}{Core golden checks}\qquad\sourcelink{https://github.com/stellar/wallet-backend}{Reference indexer}\qquad\sourcelink{https://github.com/stellar/scf-handbook/blob/cf94e3691faba4187b72c4d98cc4ff4a66c75fbc/scf-awards/build-award/rfp-track.md\#L166}{SCF requirements}}
+\end{document}

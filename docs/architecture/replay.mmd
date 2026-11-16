@@ -1,0 +1,6 @@
+flowchart LR
+    C[Versioned XDR corpus] --> S[JS, Go and Rust]
+    C --> I[Local getLedgers]
+    S --> V[Fields and bytes]
+    I --> W[Wallet backend]
+    W --> R[Persisted rows]
