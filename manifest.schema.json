@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stellar XDR example manifest (draft)",
+  "type": "object",
+  "required": ["schemaVersion", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "entries": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+\\.json$" }
+    }
+  },
+  "$defs": {
+    "keyHex": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "account": { "type": "string", "pattern": "^G[A-Z2-7]{55}$" },
+    "xdrPath": { "type": "string", "pattern": "^fixtures/[a-z0-9-]+\\.xdr$" },
+    "issuer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["strKey", "keyHex", "assetXdrBase64", "xdrPath"],
+      "properties": {
+        "strKey": { "$ref": "#/$defs/account" },
+        "keyHex": { "$ref": "#/$defs/keyHex" },
+        "assetXdrBase64": { "type": "string", "minLength": 4 },
+        "xdrPath": { "$ref": "#/$defs/xdrPath" }
+      }
+    },
+    "entry": {
+      "type": "object", "unevaluatedProperties": false,
+      "required": ["id", "xdrType", "synthetic", "source", "introducedBy"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+        "xdrType": { "enum": ["Asset", "MuxedAccount"] },
+        "synthetic": { "type": "boolean" },
+        "source": { "type": "string", "pattern": "^https://" },
+        "introducedBy": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["cap", "protocolVersion"],
+              "properties": {
+                "cap": { "type": "string", "pattern": "^CAP-[0-9]{4}$" },
+                "protocolVersion": { "type": "integer", "minimum": 1 }
+              }
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["assetCode", "expectedComparison", "issuers"],
+          "properties": {
+            "xdrType": { "const": "Asset" },
+            "assetCode": { "type": "string", "pattern": "^[a-zA-Z0-9]{1,4}$" },
+            "expectedComparison": { "enum": [-1, 0, 1] },
+            "issuers": {
+              "type": "array", "minItems": 2, "maxItems": 2,
+              "items": { "$ref": "#/$defs/issuer" }
+            }
+          }
+        },
+        {
+          "required": ["xdrPath", "expected"],
+          "properties": {
+            "xdrType": { "const": "MuxedAccount" },
+            "xdrPath": { "$ref": "#/$defs/xdrPath" },
+            "expected": {
+              "type": "object", "additionalProperties": false,
+              "required": ["discriminant", "idDecimal", "keyHex", "baseAccount"],
+              "properties": {
+                "discriminant": { "const": 256 },
+                "idDecimal": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,19})$" },
+                "keyHex": { "$ref": "#/$defs/keyHex" },
+                "baseAccount": { "$ref": "#/$defs/account" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

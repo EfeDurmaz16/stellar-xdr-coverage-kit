@@ -8,12 +8,17 @@
     {
       "strKey": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF",
       "keyHex": "0000000000000000000000000000000000000000000000000000000000000000",
-      "assetXdrBase64": "AAAAAUFSU1QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      "assetXdrBase64": "AAAAAUFSU1QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "xdrPath": "fixtures/arst-first.xdr"
     },
     {
       "strKey": "GA5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DUOR2HI5DVTUJ",
       "keyHex": "3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a",
-      "assetXdrBase64": "AAAAAUFSU1QAAAAAOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo="
+      "assetXdrBase64": "AAAAAUFSU1QAAAAAOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo=",
+      "xdrPath": "fixtures/arst-second.xdr"
     }
-  ]
+  ],
+  "$schema": "./manifest.schema.json#/$defs/entry",
+  "xdrType": "Asset",
+  "introducedBy": null
 }
