@@ -1,0 +1,15 @@
+{
+  "$schema": "./manifest.schema.json#/$defs/entry",
+  "id": "muxed-account-uint64-id",
+  "xdrType": "MuxedAccount",
+  "synthetic": true,
+  "source": "https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md",
+  "introducedBy": { "cap": "CAP-0027", "protocolVersion": 13 },
+  "xdrPath": "fixtures/muxed-account.xdr",
+  "expected": {
+    "discriminant": 256,
+    "idDecimal": "9007199254740993",
+    "keyHex": "1111111111111111111111111111111111111111111111111111111111111111",
+    "baseAccount": "GAIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCEIRCF6M"
+  }
+}
