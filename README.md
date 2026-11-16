@@ -2,6 +2,8 @@
 
 Two synthetic examples pair raw Stellar XDR files with expected decoded values. The same files run against three pinned releases of the Stellar JavaScript SDK.
 
+Read the [two-page technical architecture](docs/architecture/stellar-xdr-coverage-kit.pdf) for the proposed SDK and indexer checks. The [diagram sources](docs/architecture/) are available in Mermaid and editable Excalidraw formats.
+
 ## Run locally
 
 With Node.js 22 or newer and Bun 1.3.14:

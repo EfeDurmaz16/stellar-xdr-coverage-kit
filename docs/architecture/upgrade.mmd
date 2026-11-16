@@ -1,0 +1,4 @@
+flowchart LR
+    P[Pin the release] --> G[Verify ledger goldens]
+    G --> T[Run both checks]
+    T --> D[Publish the diff]

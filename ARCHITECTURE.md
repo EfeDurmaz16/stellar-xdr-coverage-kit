@@ -1,5 +1,7 @@
 # Stellar XDR Coverage Kit
 
+[Download the illustrated two-page architecture](docs/architecture/stellar-xdr-coverage-kit.pdf). The [source directory](docs/architecture/) contains the LaTeX document and its editable Mermaid and Excalidraw diagrams. To rebuild the PDF, run `pdflatex stellar-xdr-coverage-kit.tex` twice from that directory.
+
 ## What a maintainer can check
 
 A wallet maintainer upgrades an SDK. Can the wallet still read the same ledger and identify the same participants? Two tests answer different parts of that question. A codec test compares decoded values and re-encoded bytes with a fixture. A replay test compares the rows the wallet actually stores with changes in ledger meta. A decoder can pass the first test while the wallet silently loses a row in the second.
